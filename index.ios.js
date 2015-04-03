@@ -13,13 +13,29 @@ var styles = React.StyleSheet.create({
       fontSize: 30,
       margin: 80,
       borderRadius: 10
-    }
+    },
+  container: {
+    flex: 1
+  }
 });
 
-class PropertyFinderApp extends React.Component{
+class HelloWorld extends React.Component{
   render() {
       return <React.Text style={styles.text}>Hello world(Again)</React.Text>;
     }
+}
+
+class PropertyFinderApp extends React.Component {
+  render() {
+    return (
+      <React.NavigatorIOS
+        style={styles.container}
+        initialRoute={{
+          title: 'Property Finder',
+          component: HelloWorld
+        }}/>
+     );
+  }
 }
 
 React.AppRegistry.registerComponent('PropertyFinder', function(){ return PropertyFinderApp });
