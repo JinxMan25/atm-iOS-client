@@ -71,9 +71,12 @@ class SearchPage extends Component {
   constructor(props){
     super(props);
     this.state = {
-      searchString: 'london',
+      searchString: '19446',
       isLoading: false,
-      message: ''
+      message: '',
+      latitude: 0,
+      longitude: 0,
+      address: ''
     };
   }
 
@@ -91,15 +94,37 @@ class SearchPage extends Component {
       );
   }
 
-  onSearchPressed(){
+  onSearchPressed() {
     var queryString = this.state.searchString.split(' ').join("%20");
     var query = "http://maps.googleapis.com/maps/api/geocode/json?address="+queryString;
     this._executeQuery(query);
   }
 
-  _handleResponse(response){
+  _handleResponse(response) {
     this.setState({ isLoading: false, message: 'Whatsup'});
-    console.log(response.results.length);
+    if (response.results.length == 1) {
+      this.state.latitude = response.results[0].geometry.location.lat;
+      this.state.longitude = response.results[0].geometry.location.lng;
+      var obj = {};
+      obj['latitude'] = this.state.latitude;
+      obj['longitude'] = this.state.longitude;
+
+      this._getImages(obj);
+    }
+  }
+
+  _getImages(coords){
+    console.log(coords);
+
+    fetch("http://atm.samiulhuq.com/atm/get/?longitude="+coords.longitude+"&latitude="+coords.latitude)
+      .then(response => response.json())
+      .then(function(data){
+        console.log("Found images");
+        console.log(data);
+      })
+    .catch(error =>
+        console.log(err)
+     );
   }
 
   onSearchTextChanged(event){
