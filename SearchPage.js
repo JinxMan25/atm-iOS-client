@@ -72,22 +72,34 @@ class SearchPage extends Component {
     super(props);
     this.state = {
       searchString: 'london',
-      isLoading: false
+      isLoading: false,
+      message: ''
     };
   }
 
   _executeQuery(query){
-    console.log(query);
     this.setState({isLoading:true});
     var self = this;
-    setTimeout(function(){
-      self.setState({isLoading:false});
-    }, 500);
+    fetch(query)
+      .then(response => response.json())
+      .then(json => this._handleResponse(json))
+      .catch(error =>
+          this.setState({
+            isLoading: false,
+            message: 'Something bad happened: '+ error
+          })
+      );
   }
 
   onSearchPressed(){
     var query = "http://maps.googleapis.com/maps/api/geocode/json?address="+this.state.searchString;
     this._executeQuery(query);
+  }
+
+  _handleResponse(test){
+    this.setState({ isLoading: false, message: 'Whatsup'});
+    console.log("line 101");
+    console.log(test);
   }
 
   onSearchTextChanged(event){
@@ -122,6 +134,7 @@ class SearchPage extends Component {
         </TouchableHighlight>
         <Image source={require('image!house')} style={styles.image}/>
         {spinner}
+        <Text style={styles.description}>{this.state.message}</Text>
       </View>
         );
   }
