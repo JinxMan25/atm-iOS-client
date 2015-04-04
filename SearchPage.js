@@ -68,8 +68,19 @@ class SearchPage extends Component {
   constructor(props){
     super(props);
     this.state = {
-      searchString: 'london'
+      searchString: 'london',
+      isLoading: false
     };
+  }
+
+  _executeQuery(query){
+    console.log(query);
+    this.setState({isLoading:true});
+  }
+
+  onSearchPressed(){
+    var query = "http://maps.googleapis.com/maps/api/geocode/json?address="+this.state.searchString;
+    this._executeQuery(query);
   }
 
   onSearchTextChanged(event){
@@ -79,10 +90,13 @@ class SearchPage extends Component {
   }
 
   render(){
+    var spinner = this.state.isLoading ?
+      (<ActivityIndicatorIOS hidden='true' size='large'/>) :
+      (<View/>);
     return (
       <View style={styles.container}>
         <Text style={styles.description}>
-          Search for houses to buy!
+          Search for images near you!
         </Text>
         <Text style={styles.description}>
           Search for place-name, postcode or search near your location.
@@ -90,6 +104,7 @@ class SearchPage extends Component {
         <View style={styles.flowRight}>
           <TextInput style={styles.searchInput} onChange={this.onSearchTextChanged.bind(this)} value={this.state.searchString} placeholder="Search via name or post code"/>
           <TouchableHighlight style={styles.button}
+            onPress={this.onSearchPressed.bind(this)}
             underlayColor="#99d9f4">
             <Text style={styles.buttonText}>Go</Text>
           </TouchableHighlight>
@@ -99,6 +114,7 @@ class SearchPage extends Component {
           <Text style={styles.buttonText}>Location</Text>
         </TouchableHighlight>
         <Image source={require('image!house')} style={styles.image}/>
+        {spinner}
       </View>
         );
   }

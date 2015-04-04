@@ -32,7 +32,7 @@ class PropertyFinderApp extends React.Component {
       <React.NavigatorIOS
         style={styles.container}
         initialRoute={{
-          title: 'Property Finder',
+          title: 'At This Moment',
           component: SearchPage
         }}/>
      );
