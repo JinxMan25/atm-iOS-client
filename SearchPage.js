@@ -92,14 +92,14 @@ class SearchPage extends Component {
   }
 
   onSearchPressed(){
-    var query = "http://maps.googleapis.com/maps/api/geocode/json?address="+this.state.searchString;
+    var queryString = this.state.searchString.split(' ').join("%20");
+    var query = "http://maps.googleapis.com/maps/api/geocode/json?address="+queryString;
     this._executeQuery(query);
   }
 
-  _handleResponse(test){
+  _handleResponse(response){
     this.setState({ isLoading: false, message: 'Whatsup'});
-    console.log("line 101");
-    console.log(test);
+    console.log(response.results.length);
   }
 
   onSearchTextChanged(event){
