@@ -3,6 +3,7 @@
 var React = require('react-native');
 
 var {
+  Animation,
   StyleSheet,
   Text,
   TextInput,
@@ -64,6 +65,19 @@ var styles = StyleSheet.create({
   }
 });
 class SearchPage extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      searchString: 'london'
+    };
+  }
+
+  onSearchTextChanged(event){
+    console.log('onSearchTextChanged')
+    this.setState({searchString: event.nativeEvent.text});
+    console.log(this.state.searchString);
+  }
+
   render(){
     return (
       <View style={styles.container}>
@@ -74,7 +88,7 @@ class SearchPage extends Component {
           Search for place-name, postcode or search near your location.
         </Text>
         <View style={styles.flowRight}>
-          <TextInput style={styles.searchInput} placeholder="Search via name or post code"/>
+          <TextInput style={styles.searchInput} onChange={this.onSearchTextChanged.bind(this)} value={this.state.searchString} placeholder="Search via name or post code"/>
           <TouchableHighlight style={styles.button}
             underlayColor="#99d9f4">
             <Text style={styles.buttonText}>Go</Text>
