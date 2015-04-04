@@ -1,6 +1,7 @@
 'use String';
 
 var React = require('react-native');
+var TimerMixin = require('react-timer-mixin');
 
 var {
   Animation,
@@ -65,6 +66,8 @@ var styles = StyleSheet.create({
   }
 });
 class SearchPage extends Component {
+  mixins:[TimerMixin];
+
   constructor(props){
     super(props);
     this.state = {
@@ -76,6 +79,10 @@ class SearchPage extends Component {
   _executeQuery(query){
     console.log(query);
     this.setState({isLoading:true});
+    var self = this;
+    setTimeout(function(){
+      self.setState({isLoading:false});
+    }, 500);
   }
 
   onSearchPressed(){
