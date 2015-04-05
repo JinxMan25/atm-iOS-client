@@ -2,6 +2,7 @@
 
 var React = require('react-native');
 var TimerMixin = require('react-timer-mixin');
+var SearchResults = require('./SearchResults')
 
 var {
   Animation,
@@ -12,6 +13,7 @@ var {
   TouchableHighlight,
   ActivityIndicatorIOS,
   Image,
+  ListView,
   Component
 } = React;
 
@@ -65,18 +67,52 @@ var styles = StyleSheet.create({
     height: 138
   }
 });
+
+var addressList = React.createClass({
+  getInitialState(){
+    return {
+      results: [],
+      dataSource: new ListViewDataSource({
+          rowHasChanged: (row1, row2) => row1 !== row2
+      })
+    }
+  },
+  getDataSource(results){
+    return this.state.dataSource.cloneWithRows(results);
+  },
+  renderRow(results){
+    return TouchableHighlight(
+      {underlayColor: '#dddddd'},
+      Text({style:{height: 30, color: 'block'}}, results.title)
+    );
+  },
+  render(){
+    var source = this.getDataSource(this.props.results);
+
+    return ListView({
+      style: {flex: 1},
+      renderRow: this.renderRow,
+      dataSource: source
+    })
+  }
+
+});
+
 class SearchPage extends Component {
   mixins:[TimerMixin];
 
   constructor(props){
     super(props);
+    var dataSource = new ListView.DataSource(
+      {rowHasChanged: (r1, r2) => r1.guid !== r2.guid});
     this.state = {
       searchString: '19446',
       isLoading: false,
       message: '',
       latitude: 0,
       longitude: 0,
-      address: ''
+      address: '',
+      dataSource: dataSource.cloneWithRows(['row1','row2'])
     };
   }
 
@@ -114,13 +150,20 @@ class SearchPage extends Component {
   }
 
   _getImages(coords){
-    console.log(coords);
 
+    var self = this;
     fetch("http://atm.samiulhuq.com/atm/get/?longitude="+coords.longitude+"&latitude="+coords.latitude)
       .then(response => response.json())
       .then(function(data){
-        console.log("Found images");
-        console.log(data);
+        var dataSource = new ListView.DataSource(
+        {rowHasChanged: (r1, r2) => r1.guid !== r2.guid});
+        self.setState({dataSource: dataSource.cloneWithRows(data)});
+        addressList({results: data});
+        /*self.props.navigator.push({
+          title: 'Results',
+          component: SearchResults,
+          passProps: {listings: data}
+        });*/
       })
     .catch(error =>
         console.log(err)
@@ -128,9 +171,18 @@ class SearchPage extends Component {
   }
 
   onSearchTextChanged(event){
-    console.log('onSearchTextChanged')
     this.setState({searchString: event.nativeEvent.text});
-    console.log(this.state.searchString);
+  }
+  renderRow(rowData, sectionID, rowID) {
+    console.log(rowData.title);
+    return (
+      <TouchableHighlight
+          underlayColor='#dddddd'>
+        <View>
+          <Text>{rowData.title}</Text>
+        </View>
+      </TouchableHighlight>
+    );
   }
 
   render(){
@@ -160,6 +212,9 @@ class SearchPage extends Component {
         <Image source={require('image!house')} style={styles.image}/>
         {spinner}
         <Text style={styles.description}>{this.state.message}</Text>
+      <ListView 
+        dataSource={this.state.dataSource}
+        renderRow={this.renderRow.bind(this)}/>
       </View>
         );
   }
