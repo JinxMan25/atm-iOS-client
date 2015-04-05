@@ -112,7 +112,7 @@ class SearchPage extends Component {
       latitude: 0,
       longitude: 0,
       address: '',
-      dataSource: dataSource.cloneWithRows(['row1','row2'])
+      dataSource: dataSource.cloneWithRows([])
     };
   }
 
@@ -137,7 +137,7 @@ class SearchPage extends Component {
   }
 
   _handleResponse(response) {
-    this.setState({ isLoading: false, message: 'Whatsup'});
+    this.setState({ isLoading: false});
     if (response.results.length == 1) {
       this.state.latitude = response.results[0].geometry.location.lat;
       this.state.longitude = response.results[0].geometry.location.lng;
@@ -157,8 +157,11 @@ class SearchPage extends Component {
       .then(function(data){
         var dataSource = new ListView.DataSource(
         {rowHasChanged: (r1, r2) => r1.guid !== r2.guid});
-        self.setState({dataSource: dataSource.cloneWithRows(data)});
-        addressList({results: data});
+        var titles = [];
+        data.map(function(row){
+          titles.push(row.title);
+        });
+        self.setState({dataSource: dataSource.cloneWithRows(titles)});
         /*self.props.navigator.push({
           title: 'Results',
           component: SearchResults,
@@ -174,12 +177,11 @@ class SearchPage extends Component {
     this.setState({searchString: event.nativeEvent.text});
   }
   renderRow(rowData, sectionID, rowID) {
-    console.log(rowData.title);
     return (
       <TouchableHighlight
           underlayColor='#dddddd'>
         <View>
-          <Text>{rowData.title}</Text>
+        <Text>{rowData}</Text>
         </View>
       </TouchableHighlight>
     );
@@ -191,12 +193,6 @@ class SearchPage extends Component {
       (<View/>);
     return (
       <View style={styles.container}>
-        <Text style={styles.description}>
-          Search for images near you!
-        </Text>
-        <Text style={styles.description}>
-          Search for place-name, postcode or search near your location.
-        </Text>
         <View style={styles.flowRight}>
           <TextInput style={styles.searchInput} onChange={this.onSearchTextChanged.bind(this)} value={this.state.searchString} placeholder="Search via name or post code"/>
           <TouchableHighlight style={styles.button}
@@ -205,14 +201,10 @@ class SearchPage extends Component {
             <Text style={styles.buttonText}>Go</Text>
           </TouchableHighlight>
         </View>
-        <TouchableHighlight style={styles.button}
-          underlayColor="#99d9f4">
-          <Text style={styles.buttonText}>Location</Text>
-        </TouchableHighlight>
-        <Image source={require('image!house')} style={styles.image}/>
         {spinner}
         <Text style={styles.description}>{this.state.message}</Text>
       <ListView 
+        style={{flex:4, height: 200}}
         dataSource={this.state.dataSource}
         renderRow={this.renderRow.bind(this)}/>
       </View>
