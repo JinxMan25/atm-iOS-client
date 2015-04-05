@@ -118,6 +118,9 @@ class SearchPage extends Component {
 
       this._getImages(obj);
     } else {
+      var dataSource = new ListView.DataSource(
+          {rowHasChanged: (r1, r2) => r1.guid !== r2.guid});
+
       this.setState({dataSource: dataSource.cloneWithRows(response.results)});
     }
   }
@@ -158,7 +161,7 @@ class SearchPage extends Component {
       <TouchableHighlight
           underlayColor='#dddddd'>
         <View>
-        <Text>{rowData}</Text>
+        <Text>{rowData.formatted_address}</Text>
         </View>
       </TouchableHighlight>
     );
