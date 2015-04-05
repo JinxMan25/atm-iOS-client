@@ -168,7 +168,7 @@ class SearchPage extends Component {
           onPress={() => this._getImages(obj)}
           underlayColor='#dddddd'>
         <View>
-        <Text>{rowData.formatted_address}</Text>
+          <Text>{rowData.formatted_address}</Text>
         </View>
       </TouchableHighlight>
     );
@@ -190,10 +190,12 @@ class SearchPage extends Component {
         </View>
         {spinner}
         <Text style={styles.description}>{this.state.message}</Text>
-      <ListView 
-        style={{flex:1, height: 200}}
-        dataSource={this.state.dataSource}
-        renderRow={this.renderRow.bind(this)}/>
+      <View style={{borderWidth: 0.5, borderColor: 'red', marginVertical: -65}}>
+        <ListView 
+          style={{flex:1, height: 200}}
+          dataSource={this.state.dataSource}
+          renderRow={this.renderRow.bind(this)}/>
+      </View>
       </View>
         );
   }
