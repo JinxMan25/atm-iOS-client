@@ -83,7 +83,8 @@ class SearchPage extends Component {
       latitude: 0,
       longitude: 0,
       address: '',
-      dataSource: dataSource.cloneWithRows([])
+      dataSource: dataSource.cloneWithRows([]),
+      pressed: 0
     };
   }
 
@@ -155,10 +156,16 @@ class SearchPage extends Component {
       this._executeQuery(query);
     }
   }
+
   renderRow(rowData, sectionID, rowID) {
-    console.log(rowData);
+    var obj = {};
+    obj['latitude'] = rowData.geometry.location.lat;
+    obj['longitude'] = rowData.geometry.location.lng;
+
     return (
       <TouchableHighlight
+          style={{height:50}}
+          onPress={() => this._getImages(obj)}
           underlayColor='#dddddd'>
         <View>
         <Text>{rowData.formatted_address}</Text>
@@ -184,7 +191,7 @@ class SearchPage extends Component {
         {spinner}
         <Text style={styles.description}>{this.state.message}</Text>
       <ListView 
-        style={{flex:4, height: 200}}
+        style={{flex:1, height: 200}}
         dataSource={this.state.dataSource}
         renderRow={this.renderRow.bind(this)}/>
       </View>
