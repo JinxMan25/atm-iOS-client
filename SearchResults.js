@@ -24,11 +24,12 @@ class SearchResults extends Component {
   }
  
   renderRow(rowData, sectionID, rowID) {
+    console.log(rowData);
     return (
       <TouchableHighlight
           underlayColor='#dddddd'>
         <View>
-          <Text>{rowData.title}</Text>
+        <Text>{rowData.title}</Text>
         </View>
       </TouchableHighlight>
     );

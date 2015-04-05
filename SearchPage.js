@@ -68,35 +68,6 @@ var styles = StyleSheet.create({
   }
 });
 
-var addressList = React.createClass({
-  getInitialState(){
-    return {
-      results: [],
-      dataSource: new ListViewDataSource({
-          rowHasChanged: (row1, row2) => row1 !== row2
-      })
-    }
-  },
-  getDataSource(results){
-    return this.state.dataSource.cloneWithRows(results);
-  },
-  renderRow(results){
-    return TouchableHighlight(
-      {underlayColor: '#dddddd'},
-      Text({style:{height: 30, color: 'block'}}, results.title)
-    );
-  },
-  render(){
-    var source = this.getDataSource(this.props.results);
-
-    return ListView({
-      style: {flex: 1},
-      renderRow: this.renderRow,
-      dataSource: source
-    })
-  }
-
-});
 
 class SearchPage extends Component {
   mixins:[TimerMixin];
@@ -137,7 +108,7 @@ class SearchPage extends Component {
   }
 
   _handleResponse(response) {
-    this.setState({ isLoading: false});
+    this.setState({isLoading: false});
     if (response.results.length == 1) {
       this.state.latitude = response.results[0].geometry.location.lat;
       this.state.longitude = response.results[0].geometry.location.lng;
@@ -146,6 +117,8 @@ class SearchPage extends Component {
       obj['longitude'] = this.state.longitude;
 
       this._getImages(obj);
+    } else {
+      this.setState({dataSource: dataSource.cloneWithRows(response.results)});
     }
   }
 
@@ -157,16 +130,12 @@ class SearchPage extends Component {
       .then(function(data){
         var dataSource = new ListView.DataSource(
         {rowHasChanged: (r1, r2) => r1.guid !== r2.guid});
-        var titles = [];
-        data.map(function(row){
-          titles.push(row.title);
-        });
-        self.setState({dataSource: dataSource.cloneWithRows(titles)});
-        /*self.props.navigator.push({
-          title: 'Results',
+
+        self.props.navigator.push({
+          title: 'Snapshots nearby',
           component: SearchResults,
           passProps: {listings: data}
-        });*/
+        });
       })
     .catch(error =>
         console.log(err)
@@ -175,8 +144,16 @@ class SearchPage extends Component {
 
   onSearchTextChanged(event){
     this.setState({searchString: event.nativeEvent.text});
+
+    var queryString = this.state.searchString.split(' ').join("%20");
+    var query = "http://maps.googleapis.com/maps/api/geocode/json?address="+queryString;
+
+    if (this.state.searchString.length >= 3){
+      this._executeQuery(query);
+    }
   }
   renderRow(rowData, sectionID, rowID) {
+    console.log(rowData);
     return (
       <TouchableHighlight
           underlayColor='#dddddd'>
