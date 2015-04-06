@@ -57,12 +57,17 @@ class SearchResults extends Component {
       {rowHasChanged: (r1, r2) => r1.guid !== r2.guid});
     this.state = {
       dataSource: dataSource.cloneWithRows(this.props.listings),
-      message: ''
+      message: '',
+      position: 'absolute'
     };
   }
 
   componentWillMount(){
-    //this.setState({message: 'No pictures near this area!'})
+    if (this.props.listings == undefined || this.props.listings.length == 0){
+      this.setState({message: 'No pictures near this area!',position:'relative'})
+  } else {
+    this.setState({message: '',position:'absolute'})
+  }
   }
  
   renderRow(rowData, sectionID, rowID) {
@@ -93,6 +98,9 @@ class SearchResults extends Component {
           dataSource={this.state.dataSource}
           renderRow={this.renderRow.bind(this)}>
         </ListView>
+        <View ref="no"style={{position:this.state.position,flex:1, flexDirection:'row',justifyContent:'center'}}>
+          <Text>{this.state.message}</Text>
+        </View>
       </View>
     );
   }

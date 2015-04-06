@@ -71,6 +71,8 @@ var styles = StyleSheet.create({
 
 class SearchPage extends Component {
   mixins:[TimerMixin];
+  componentDidMount(){
+  }
 
   constructor(props){
     super(props);
@@ -87,7 +89,6 @@ class SearchPage extends Component {
       pressed: 0
     };
   }
-
   _executeQuery(query){
     this.setState({isLoading:true});
     var self = this;
@@ -179,7 +180,7 @@ class SearchPage extends Component {
       (<ActivityIndicatorIOS hidden='true' size='large'/>) :
       (<View/>);
     return (
-      <View style={styles.container}>
+      <View ref="this" style={styles.container}>
         <View style={styles.flowRight}>
           <TextInput style={styles.searchInput} onChange={this.onSearchTextChanged.bind(this)} value={this.state.searchString} placeholder="Search via name or post code"/>
           <TouchableHighlight style={styles.button}
@@ -188,11 +189,10 @@ class SearchPage extends Component {
             <Text style={styles.buttonText}>Go</Text>
           </TouchableHighlight>
         </View>
-        {spinner}
         <Text style={styles.description}>{this.state.message}</Text>
-      <View style={{borderWidth: 0.5, borderColor: 'red', marginVertical: -65}}>
+      <View style={{borderWidth: 0, borderColor: 'red', marginVertical: -65}}>
         <ListView 
-          style={{flex:1, height: 200}}
+          style={{height: 200}}
           dataSource={this.state.dataSource}
           renderRow={this.renderRow.bind(this)}/>
       </View>
