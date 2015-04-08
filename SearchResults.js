@@ -65,9 +65,9 @@ class SearchResults extends Component {
   componentWillMount(){
     if (this.props.listings == undefined || this.props.listings.length == 0){
       this.setState({message: 'No pictures near this area!',position:'relative'})
-  } else {
+    } else {
     this.setState({message: '',position:'absolute'})
-  }
+    }
   }
  
   renderRow(rowData, sectionID, rowID) {
@@ -75,7 +75,7 @@ class SearchResults extends Component {
     console.log(rowData);
     return (
      <View style={styles.container}>
-        <Image style={styles.image} 
+     <Image style={{height:300, width:400}} 
             source={{uri: img_url}} />
         <View style={styles.heading}>
           <Text style={styles.title}>{rowData.title}</Text>

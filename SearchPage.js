@@ -134,7 +134,7 @@ class SearchPage extends Component {
       .then(response => response.json())
       .then(function(data){
         var dataSource = new ListView.DataSource(
-        {rowHasChanged: (r1, r2) => r1.guid !== r2.guid});
+        {rowHasChanged: (r1, r2) => r1.formatted_address !== r2.formatted_address});
 
         self.props.navigator.push({
           title: 'Snapshots nearby',
@@ -190,8 +190,9 @@ class SearchPage extends Component {
           </TouchableHighlight>
         </View>
         <Text style={styles.description}>{this.state.message}</Text>
-      <View style={{borderWidth: 0, borderColor: 'red', marginVertical: -65}}>
+      <View style={{borderWidth: 0, borderColor: 'red', marginVertical: 0}}>
         <ListView 
+          automaticallyAdjustContentInsets={false}
           style={{height: 200}}
           dataSource={this.state.dataSource}
           renderRow={this.renderRow.bind(this)}/>
