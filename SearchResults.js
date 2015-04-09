@@ -18,7 +18,6 @@ var styles = StyleSheet.create({
   },
   special: {
     flex: 1,
-    marginTop: -65
   },
   heading: {
     backgroundColor: '#F8F8F8',
@@ -75,7 +74,7 @@ class SearchResults extends Component {
     console.log(rowData);
     return (
      <View style={styles.container}>
-     <Image style={{height:300, width:400}} 
+     <Image style={{height:200}} 
             source={{uri: img_url}} />
         <View style={styles.heading}>
           <Text style={styles.title}>{rowData.title}</Text>
@@ -95,6 +94,7 @@ class SearchResults extends Component {
     return (
       <View style={styles.special}>
         <ListView
+          automaticallyAdjustContentInsets={false}
           dataSource={this.state.dataSource}
           renderRow={this.renderRow.bind(this)}>
         </ListView>
