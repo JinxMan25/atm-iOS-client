@@ -6,6 +6,7 @@
 
 var React = require('react-native');
 var SearchPage = require('./SearchPage');
+var test = require('./Test');
 
 var styles = React.StyleSheet.create({
   text: {
@@ -15,27 +16,53 @@ var styles = React.StyleSheet.create({
       margin: 80,
       borderRadius: 10
     },
+  bar:{
+    backgroundColor: 'black'
+  },
   container: {
     flex: 1
   }
 });
 
-class HelloWorld extends React.Component{
-  render() {
-      return <React.Text style={styles.text}>Hello world(Again)</React.Text>;
-    }
-}
 
 class PropertyFinderApp extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      selectedTab: 'welcome'
+    }
+  }
   render() {
     return (
-      <React.NavigatorIOS
-        style={styles.container}
-        initialRoute={{
-          title: 'At This Moment',
-          component: SearchPage
-        }}/>
-     );
+          <React.TabBarIOS barTintColor="#FFFFFF" tintColor="#FFFFFF" selectedTab={this.state.selectedTab}>
+            <React.TabBarIOS.Item
+              selected={this.state.selectedTab === 'welcome'}
+              icon={{uri:'search'}}
+              onPress={() => {
+                  this.setState({
+                      selectedTab: 'welcome',
+                  });
+              }}>
+          <React.NavigatorIOS
+                style={styles.container}
+                barTintColot="block"
+                initialRoute={{
+                  component: SearchPage,
+                  title: 'ATM'
+                }}
+              />
+            </React.TabBarIOS.Item>
+            <React.TabBarIOS.Item
+              selected={this.state.selectedTab === 'more'}
+              icon={{uri:'more'}}
+              onPress={() => {
+                    this.setState({
+                        selectedTab: 'more',
+                    });
+              }}>
+            </React.TabBarIOS.Item>
+          </React.TabBarIOS>
+        );
   }
 }
 
